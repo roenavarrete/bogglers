@@ -7,11 +7,4 @@
         <RootNamespace>Boggle_CSCE_361</RootNamespace>
     </PropertyGroup>
 
-    <ItemGroup>
-      <Folder Include="App_Data\" />
-      <Folder Include="App_Start\" />
-      <Folder Include="Content\" />
-      <Folder Include="Scripts\" />
-    </ItemGroup>
-
 </Project>

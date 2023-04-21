@@ -6,7 +6,7 @@ namespace Boggle_CSCE_361.Models
     {
         public static Boolean CheckIfInDatabase(string word)
         {
-            string connString = "Data Source=localhost\\SQLEXPRESS;Database=master;Integrated Security=SSPI";
+            string connString = DatabaseConnectionInfoModel.ConnectionString();
             string query = "SELECT COUNT(*) FROM words WHERE word = @InputString";
 
             SqlConnection conn = new SqlConnection(connString);
@@ -30,18 +30,23 @@ namespace Boggle_CSCE_361.Models
 
         public static void InsertWord(string word)
         {
-            string connString = "Data Source=localhost\\SQLEXPRESS;Database=master;Integrated Security=SSPI";
-            string query = "INSERT INTO words @InputString";
+            // Set up connection string
+            string connectionString = DatabaseConnectionInfoModel.ConnectionString();
 
-            SqlConnection conn = new SqlConnection(connString);
-            SqlCommand command = new SqlCommand(query, conn);
+            // Create SQL query
+            string query = "INSERT INTO Words (Word) VALUES (@Word)";
+
+            // Set up connection and command objects
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = new SqlCommand(query, connection))
             {
-                command.Parameters.AddWithValue("@InputString", word);
-                conn.Open();
+                // Add parameters to command
+                command.Parameters.AddWithValue("@Word", word);
 
-                SqlDataReader reader = command.ExecuteReader();
-
-
+                // Open connection, execute command, and close connection
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
             }
         }
     }

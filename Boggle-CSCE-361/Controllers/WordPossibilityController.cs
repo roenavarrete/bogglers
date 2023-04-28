@@ -1,48 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics.Metrics;
-
-namespace Boggle_CSCE_361.Controllers
+﻿namespace Boggle_CSCE_361.Controllers
 {
-    public class WordPossibilityController : Controller
+    public class WordPossibilityController : IWordPossibilityController
     {
-        /**
-         * 
-         * Checks if a word is possible where the starting letter is at indices startRow and startColumn within the grid.
-         * 
-         * Uses recursion to recurse through all the possible routes from the letter.
-         * Expects "q" in the grid to be treated as "qu".
-         * 
-         * Returns true if the word is possible at the starting indices.
-         * Returns false if the word is impossible at the starting indices.
-         * 
-         **/
-        public bool isWordPossibleHere(String word, char[,] grid, int startRow, int startColumn, int letterIndex)
+        public bool isWordPossibleHere(String word, String[,] grid, int startRow, int startColumn, int letterIndex)
         {
             if (word.Length == letterIndex)
             {
                 return true;
             }
-            else if (startRow < 0 || startRow >= grid.Length || startColumn < 0 || startColumn >= grid[0].Length)
+            else if (startRow < 0 || startRow >= grid.GetUpperBound(1) + 1 || startColumn < 0 || startColumn >= grid.GetUpperBound(0) + 1)
             {
                 return false;
             }
-            else if (grid[startRow][startColumn] != word[letterIndex])
+            else if (!grid[startRow, startColumn].ToString().Contains((word[letterIndex])))
             {
                 return false;
             }
 
-            char newGrid[grid.Length][grid[0].Length];
-            for (int i = 0; i < grid.Length; i++)
-            {
-                for (int j = 0; j < grid[i].Length; j++)
-                {
-                    newGrid[i][j] = grid[i][j];
-                }
-            }
-            newGrid[startRow][startColumn] = '$';
+            String[,] newGrid = grid.Clone() as String[,];
+            newGrid[startRow, startColumn] = "$";
 
             int newLetterIndex = letterIndex + 1;
-            if (grid[startRow][startColumn] == 'q' || grid[startRow][startColumn] == 'Q')
+            if (grid[startRow, startColumn].ToString().Contains('q') || grid[startRow, startColumn].ToString().Contains('Q'))
             {
                 newLetterIndex++;
             }
@@ -61,26 +40,17 @@ namespace Boggle_CSCE_361.Controllers
             return foundNextLetter;
         }
 
-        /**
-         * 
-         * Uses the isWordPossibleHere() function.
-         * Loops over the whole grid to check if the word is possible at each index.
-         * If the word length is less than 3, the word is automatically considered false.
-         * If the word is not within the database, the word is automatically considered false.
-         * 
-         **/
-        public bool isWordPossibleGrid(char[,] grid, String word)
+        public bool isWordPossibleGrid(String[,] grid, String word)
         {
             if (word.Length < 3)
             {
                 return false;
             }
-            //if (!boggleWordDatabase.Contains(word)) { return false; }
-            for (int row = 0; row < grid.Length; row++)
+            for (int row = 0; row < grid.GetUpperBound(1) + 1; row++)
             {
-                for (int column = 0; column < grid[row].Length; column++)
+                for (int column = 0; column < grid.GetUpperBound(0) + 1; column++)
                 {
-                    if (isWordPossibleHere(grid, word, row, column, 0))
+                    if (isWordPossibleHere(word, grid, row, column, 0))
                     {
                         return true;
                     }

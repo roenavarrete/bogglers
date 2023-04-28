@@ -12,7 +12,7 @@
             {
                 return false;
             }
-            else if (!grid[startRow, startColumn].ToString().Contains((word[letterIndex])))
+            else if (!grid[startRow, startColumn].ToString().ToUpper().Contains((word[letterIndex].ToString().ToUpper())))
             {
                 return false;
             }

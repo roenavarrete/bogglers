@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using Newtonsoft.Json;
 using Boggle_CSCE_361.Controllers.Interfaces;
 using Boggle_CSCE_361.Controllers.Controllers;
+using Boggle_CSCE_361.Models.DatabaseInfo;
 
 namespace Boggle_CSCE_361.Controllers;
 
@@ -53,9 +54,10 @@ public class HomeController : Controller
         for (int i = 0; i < inputWordsArray.Length; i++)
         {
             string word = inputWordsArray[i].ToLower();
-            if (wordVerifier.isWordPossibleGrid(board, word))
+            if (wordVerifier.isWordPossibleGrid(board, word) && DatabaseUtilsModel.CheckIfInDatabase(word) && word.Length > 2)
             {
                 Console.WriteLine("valid word: " + word);
+
                 validWords.Add(word);
                 validWords = validWords.Distinct().ToList();
 				score += scorer.getScore(word);

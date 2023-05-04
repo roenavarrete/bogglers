@@ -1,10 +1,11 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Boggle_CSCE_361.Models;
-using Boggle_CSCE_361.Controllers;
 using System.Net;
 using System.Net.Sockets;
 using Newtonsoft.Json;
+using Boggle_CSCE_361.Controllers.Interfaces;
+using Boggle_CSCE_361.Controllers.Controllers;
 
 namespace Boggle_CSCE_361.Controllers;
 
@@ -49,23 +50,15 @@ public class HomeController : Controller
         List<string> validWords = new List<string>();
         int score = 0;
 
-        for (int i = 0; i < board.GetLength(0); i++)
-        {
-	        for (int j = 0; j < board.GetLength(1); j++)
-	        {
-		        Console.Write(board[i, j]);
-			}
-	        Console.WriteLine();
-        }
-
         for (int i = 0; i < inputWordsArray.Length; i++)
         {
-            string word = inputWordsArray[i];
+            string word = inputWordsArray[i].ToLower();
             if (wordVerifier.isWordPossibleGrid(board, word))
             {
                 Console.WriteLine("valid word: " + word);
                 validWords.Add(word);
-                score += scorer.getScore(word);
+                validWords = validWords.Distinct().ToList();
+				score += scorer.getScore(word);
             }
         }
         string[] validWordArray = validWords.ToArray();

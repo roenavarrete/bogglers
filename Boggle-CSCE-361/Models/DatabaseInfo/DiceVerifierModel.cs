@@ -1,13 +1,13 @@
-﻿namespace Boggle_CSCE_361.Models;
+﻿namespace Boggle_CSCE_361.Models.DatabaseInfo;
 
-public class DiceVerifier
+public class DiceVerifierModel
 {
     private readonly Dictionary<string, int> _letterFrequencies = new();
     private readonly Dictionary<string, HashSet<int>> _diceReverseLookup = new();
     private readonly int _numDice;
     private readonly int _maximumTokenLength;
 
-    public DiceVerifier(List<List<string>> dicePool)
+    public DiceVerifierModel(List<List<string>> dicePool)
     {
         _numDice = dicePool.Count;
         _maximumTokenLength = 0;
@@ -24,14 +24,14 @@ public class DiceVerifier
                         _maximumTokenLength = token.Length;
                     }
                 }
-                
+
                 _letterFrequencies[token] += 1;
 
                 if (!_diceReverseLookup.ContainsKey(token))
                 {
                     _diceReverseLookup[token] = new();
                 }
-                
+
                 _diceReverseLookup[token].Add(index);
             }
         }
@@ -44,7 +44,7 @@ public class DiceVerifier
         {
             return false;
         }
-        
+
         // Operation: Generate the list of tokens naively
         List<string> tokens = new();
         {
@@ -66,13 +66,13 @@ public class DiceVerifier
                 }
             }
         }
-        
+
         // Filter 2: letters appear too often
         {
             Dictionary<string, int> tokenCounts = new();
             foreach (var token in tokens)
             {
-                if (!tokenCounts.ContainsKey(token)) 
+                if (!tokenCounts.ContainsKey(token))
                 {
                     tokenCounts[token] = 0;
                 }

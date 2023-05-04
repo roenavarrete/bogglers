@@ -10,7 +10,7 @@ namespace Boggle_CSCE_361.Controllers;
 
 public class HomeController : Controller
 {
-    private string[,] board = BoardGenerationController.GenerateBoard();
+    private static string[,] board = BoardGenerationController.GenerateBoard();
 
     private readonly ILogger<HomeController> _logger;
 
@@ -44,22 +44,32 @@ public class HomeController : Controller
     {
         string[] inputWordsArray = inputWords.Split(',');
 
-        IWordPossibilityController wordVarifier = new WordPossibilityController();
+        IWordPossibilityController wordVerifier = new WordPossibilityController();
         IWordScorerController scorer = new WordScorerController();
         List<string> validWords = new List<string>();
         int score = 0;
+
+        for (int i = 0; i < board.GetLength(0); i++)
+        {
+	        for (int j = 0; j < board.GetLength(1); j++)
+	        {
+		        Console.Write(board[i, j]);
+			}
+	        Console.WriteLine();
+        }
+
         for (int i = 0; i < inputWordsArray.Length; i++)
         {
             string word = inputWordsArray[i];
-            if (wordVarifier.isWordPossibleGrid(board, word));
+            if (wordVerifier.isWordPossibleGrid(board, word))
             {
                 Console.WriteLine("valid word: " + word);
                 validWords.Add(word);
                 score += scorer.getScore(word);
             }
         }
-        string[] wordArray = validWords.ToArray();
-        var model = (WordScorerController: wordArray, Score: score);
+        string[] validWordArray = validWords.ToArray();
+        var model = (WordScorerController: validWordArray, Score: score);
         return View(model);
     }
 

@@ -2,10 +2,12 @@
 
 <div style="text-align: center;">
 	<h1>Boggle</h1>
-	<p>Words submitted:</p>
+	<p>Valid Submitted Words:</p>
 	@foreach (var word in Model.Words)
-		{
-			<li>@word</li>
-		}
+	{
+		<li>@word</li>
+	}
 	<p>Score: @Model.Score</p>
 </div>
+
+<a href="@Url.Action("Index", "Home")" class="btn btn-primary">Play Again</a>

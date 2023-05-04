@@ -4,11 +4,14 @@ using Boggle_CSCE_361.Models;
 using Boggle_CSCE_361.Controllers;
 using System.Net;
 using System.Net.Sockets;
+using Newtonsoft.Json;
 
 namespace Boggle_CSCE_361.Controllers;
 
 public class HomeController : Controller
 {
+    private string[,] board = BoardGenerationController.GenerateBoard();
+
     private readonly ILogger<HomeController> _logger;
 
     public HomeController(ILogger<HomeController> logger)
@@ -33,15 +36,31 @@ public class HomeController : Controller
 	public IActionResult Game()
     {
 
-        return View(BoardGenerationController.GenerateBoard());
+        return View(board);
     }
 
     [HttpPost]
-    public JsonResult CheckWord(string wordInput)
+    public IActionResult GameOver(string inputWords)
     {
-        // Process the user's word guess here
-        bool isCorrect = WordCheck.CheckIfWordIsCorrect(wordInput);
-        return Json(new { IsCorrect = isCorrect });
+        string[] inputWordsArray = inputWords.Split(',');
+
+        IWordPossibilityController wordVarifier = new WordPossibilityController();
+        IWordScorerController scorer = new WordScorerController();
+        List<string> validWords = new List<string>();
+        int score = 0;
+        for (int i = 0; i < inputWordsArray.Length; i++)
+        {
+            string word = inputWordsArray[i];
+            if (wordVarifier.isWordPossibleGrid(board, word));
+            {
+                Console.WriteLine("valid word: " + word);
+                validWords.Add(word);
+                score += scorer.getScore(word);
+            }
+        }
+        string[] wordArray = validWords.ToArray();
+        var model = (WordScorerController: wordArray, Score: score);
+        return View(model);
     }
 
 

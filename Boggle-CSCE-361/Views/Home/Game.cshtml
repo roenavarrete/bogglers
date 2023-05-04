@@ -1,5 +1,4 @@
-﻿<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -26,49 +25,31 @@
 </div>
 
 <div style="text-align: center; margin-top: 20px;">
-    <form id="wordGuessForm">
-        @Html.AntiForgeryToken()
-        <label for="wordInput">Enter a word:</label>
-        <input type="text" id="wordInput" name="wordInput">
-        <button type="submit">Submit</button>
-    </form>
+	<form id="wordGuessForm">
+		@Html.AntiForgeryToken()
+		<label for="wordInput">Enter a word:</label>
+		<input type="text" id="wordInput" name="wordInput">
+		<button type="submit">Submit</button>
+	</form>
 </div>
-
-<div style="text-align: center;">
-    <p id="result"></p>
-</div>
-
-<script>
-    $(function () {
-        $('form').submit(function (event) {
-            event.preventDefault();
-            $.ajax({
-                type: 'POST',
-                url: '/Home/CheckWord',
-                data: $('form').serialize(),
-                success: function (data) {
-                    if (data.IsCorrect) {
-                        $('#result').html('<span style="color: green;">Correct!</span>');
-                    } else {
-                        $('#result').html('<span style="color: red;">Incorrect</span>');
-                    }
-                },
-                error: function () {
-                    alert('An error occurred while processing your request.');
-                }
-            });
-        });
-    });
-</script>
-
-
 
 <script>
     // Set the countdown time in minutes
-    var countdownTime = 3;
+    var countdownTime = 0.25;
+
+    // Create an empty array to store the user's input words
+    var inputWords = [];
 
     // Calculate the end time of the countdown
     var endTime = new Date().getTime() + countdownTime * 60 * 1000;
+
+    // Add an event listener to the wordGuessForm to capture the input value every time the form is submitted
+    document.getElementById("wordGuessForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        var input = document.getElementById("wordInput").value;
+        inputWords.push(input);
+        document.getElementById("wordInput").value = "";
+    });
 
     // Update the countdown timer every second
     var countdownInterval = setInterval(function () {
@@ -79,6 +60,31 @@
         if (remainingSeconds <= 0) {
             clearInterval(countdownInterval);
             document.getElementById("countdown").innerHTML = "Time's up!";
+            document.getElementById("wordInput").disabled = true;
+            document.querySelector("#wordGuessForm button[type='submit']").disabled = true;
+
+            var form = document.createElement("form");
+            form.method = "post";
+            form.action = "/Home/GameOver";
+
+            var inputWordsField = document.createElement("input");
+            inputWordsField.type = "hidden";
+            inputWordsField.name = "inputWords";
+            inputWordsField.value = inputWords.join(",");
+
+            var formGroup = document.createElement("div");
+            formGroup.className = "form-group";
+
+            var submitButton = document.createElement("button");
+            submitButton.type = "submit";
+            submitButton.className = "btn btn-primary";
+            submitButton.innerText = "See Results";
+
+            formGroup.appendChild(submitButton);
+            form.appendChild(inputWordsField);
+            form.appendChild(formGroup);
+
+            document.body.appendChild(form);
         } else {
             // Display the remaining time in minutes and seconds
             var minutes = Math.floor(remainingSeconds / 60);
@@ -87,5 +93,3 @@
         }
     }, 1000);
 </script>
-
-

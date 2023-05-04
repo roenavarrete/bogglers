@@ -1,0 +1,11 @@
+﻿@model (string[] Words, int Score)
+
+<div style="text-align: center;">
+	<h1>Boggle</h1>
+	<p>Words submitted:</p>
+	@foreach (var word in Model.Words)
+		{
+			<li>@word</li>
+		}
+	<p>Score: @Model.Score</p>
+</div>

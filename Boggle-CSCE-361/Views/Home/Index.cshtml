@@ -1,8 +1,20 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<h2>Enter IP Address and select option:</h2>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<form method="post" asp-action="Connect">
+	<div class="form-group">
+		<label>IP Address:</label>
+		<input type="text" name="ipAddress" class="form-control" />
+	</div>
+
+	<div class="form-group">
+		<label><input type="radio" name="connectionType" value="host" /> Host</label>
+	</div>
+
+	<div class="form-group">
+		<label><input type="radio" name="connectionType" value="join" /> Join</label>
+	</div>
+
+	<div class="form-group">
+		<button type="submit" class="btn btn-primary">Connect</button>
+	</div>
+</form>

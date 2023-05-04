@@ -1,0 +1,91 @@
+﻿<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model string[,]
+
+<div style="text-align: center;">
+    <h1>Boggle</h1>
+    <p id="countdown"></p>
+</div>
+
+
+<div style="display: flex; justify-content: center;">
+    <table style="border-collapse: collapse; border: 1px solid black;">
+        @for (int i = 0; i < Model.GetLength(0); i++)
+        {
+            <tr style="border-collapse: collapse; border: 1px solid black;">
+                @for (int j = 0; j < Model.GetLength(1); j++)
+                {
+                    <td style="padding: 6px; border-collapse: collapse; border: 1px solid black;">@Model[i,j]</td>
+                }
+            </tr>
+        }
+    </table>
+</div>
+
+<div style="text-align: center; margin-top: 20px;">
+    <form id="wordGuessForm">
+        @Html.AntiForgeryToken()
+        <label for="wordInput">Enter a word:</label>
+        <input type="text" id="wordInput" name="wordInput">
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<div style="text-align: center;">
+    <p id="result"></p>
+</div>
+
+<script>
+    $(function () {
+        $('form').submit(function (event) {
+            event.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '/Home/CheckWord',
+                data: $('form').serialize(),
+                success: function (data) {
+                    if (data.IsCorrect) {
+                        $('#result').html('<span style="color: green;">Correct!</span>');
+                    } else {
+                        $('#result').html('<span style="color: red;">Incorrect</span>');
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        });
+    });
+</script>
+
+
+
+<script>
+    // Set the countdown time in minutes
+    var countdownTime = 3;
+
+    // Calculate the end time of the countdown
+    var endTime = new Date().getTime() + countdownTime * 60 * 1000;
+
+    // Update the countdown timer every second
+    var countdownInterval = setInterval(function () {
+        // Calculate the remaining time in seconds
+        var remainingSeconds = Math.round((endTime - new Date().getTime()) / 1000);
+
+        // Stop the countdown when the time is up
+        if (remainingSeconds <= 0) {
+            clearInterval(countdownInterval);
+            document.getElementById("countdown").innerHTML = "Time's up!";
+        } else {
+            // Display the remaining time in minutes and seconds
+            var minutes = Math.floor(remainingSeconds / 60);
+            var seconds = remainingSeconds % 60;
+            document.getElementById("countdown").innerHTML = minutes + "m " + seconds + "s";
+        }
+    }, 1000);
+</script>
+
+

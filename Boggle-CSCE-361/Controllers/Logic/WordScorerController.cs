@@ -1,8 +1,10 @@
-﻿namespace Boggle_CSCE_361.Controllers
+﻿using Boggle_CSCE_361.Controllers.Interfaces;
+
+namespace Boggle_CSCE_361.Controllers.Controllers
 {
     public class WordScorerController : IWordScorerController
     {
-        public int getScore(String word)
+        public int getScore(string word)
         {
             switch (word.Length)
             {

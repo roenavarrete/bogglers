@@ -1,0 +1,95 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model string[,]
+
+<div style="text-align: center;">
+    <h1>Boggle</h1>
+    <p id="countdown"></p>
+</div>
+
+
+<div style="display: flex; justify-content: center;">
+    <table style="border-collapse: collapse; border: 1px solid black;">
+        @for (int i = 0; i < Model.GetLength(0); i++)
+        {
+            <tr style="border-collapse: collapse; border: 1px solid black;">
+                @for (int j = 0; j < Model.GetLength(1); j++)
+                {
+                    <td style="padding: 6px; border-collapse: collapse; border: 1px solid black;">@Model[i,j]</td>
+                }
+            </tr>
+        }
+    </table>
+</div>
+
+<div style="text-align: center; margin-top: 20px;">
+	<form id="wordGuessForm">
+		@Html.AntiForgeryToken()
+		<label for="wordInput">Enter a word:</label>
+		<input type="text" id="wordInput" name="wordInput">
+		<button type="submit">Submit</button>
+	</form>
+</div>
+
+<script>
+    // Set the countdown time in minutes
+    var countdownTime = 3;
+
+    // Create an empty array to store the user's input words
+    var inputWords = [];
+
+    // Calculate the end time of the countdown
+    var endTime = new Date().getTime() + countdownTime * 60 * 1000;
+
+    // Add an event listener to the wordGuessForm to capture the input value every time the form is submitted
+    document.getElementById("wordGuessForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        var input = document.getElementById("wordInput").value;
+        inputWords.push(input);
+        document.getElementById("wordInput").value = "";
+    });
+
+    // Update the countdown timer every second
+    var countdownInterval = setInterval(function () {
+        // Calculate the remaining time in seconds
+        var remainingSeconds = Math.round((endTime - new Date().getTime()) / 1000);
+
+        // Stop the countdown when the time is up
+        if (remainingSeconds <= 0) {
+            clearInterval(countdownInterval);
+            document.getElementById("countdown").innerHTML = "Time's up!";
+            document.getElementById("wordInput").disabled = true;
+            document.querySelector("#wordGuessForm button[type='submit']").disabled = true;
+
+            var form = document.createElement("form");
+            form.method = "post";
+            form.action = "/Home/GameOver";
+
+            var inputWordsField = document.createElement("input");
+            inputWordsField.type = "hidden";
+            inputWordsField.name = "inputWords";
+            inputWordsField.value = inputWords.join(",");
+
+            var formGroup = document.createElement("div");
+            formGroup.className = "form-group";
+
+            var submitButton = document.createElement("button");
+            submitButton.type = "submit";
+            submitButton.className = "btn btn-primary";
+            submitButton.innerText = "See Results";
+
+            formGroup.appendChild(submitButton);
+            form.appendChild(inputWordsField);
+            form.appendChild(formGroup);
+
+            document.body.appendChild(form);
+        } else {
+            // Display the remaining time in minutes and seconds
+            var minutes = Math.floor(remainingSeconds / 60);
+            var seconds = remainingSeconds % 60;
+            document.getElementById("countdown").innerHTML = minutes + "m " + seconds + "s";
+        }
+    }, 1000);
+</script>

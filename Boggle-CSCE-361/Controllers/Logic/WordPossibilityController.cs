@@ -1,8 +1,10 @@
-﻿namespace Boggle_CSCE_361.Controllers
+﻿using Boggle_CSCE_361.Controllers.Interfaces;
+
+namespace Boggle_CSCE_361.Controllers.Controllers
 {
     public class WordPossibilityController : IWordPossibilityController
     {
-        public bool isWordPossibleHere(String word, String[,] grid, int startRow, int startColumn, int letterIndex)
+        public bool isWordPossibleHere(string word, string[,] grid, int startRow, int startColumn, int letterIndex)
         {
             if (word.Length == letterIndex)
             {
@@ -12,12 +14,12 @@
             {
                 return false;
             }
-            else if (!grid[startRow, startColumn].ToString().ToUpper().Contains((word[letterIndex].ToString().ToUpper())))
+            else if (!grid[startRow, startColumn].ToString().ToUpper().Contains(word[letterIndex].ToString().ToUpper()))
             {
                 return false;
             }
 
-            String[,] newGrid = grid.Clone() as String[,];
+            string[,] newGrid = grid.Clone() as string[,];
             newGrid[startRow, startColumn] = "$";
 
             int newLetterIndex = letterIndex + 1;
@@ -40,7 +42,7 @@
             return foundNextLetter;
         }
 
-        public bool isWordPossibleGrid(String[,] grid, String word)
+        public bool isWordPossibleGrid(string[,] grid, string word)
         {
             if (word.Length < 3)
             {

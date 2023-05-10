@@ -1,4 +1,4 @@
-﻿namespace Boggle_CSCE_361.Models
+﻿namespace Boggle_CSCE_361.Models.DatabaseInfo
 {
     public class DatabaseConnectionInfoModel
     {

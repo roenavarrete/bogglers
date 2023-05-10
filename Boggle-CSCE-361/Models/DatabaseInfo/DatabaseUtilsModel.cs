@@ -1,10 +1,10 @@
 ﻿using System.Data.SqlClient;
 
-namespace Boggle_CSCE_361.Models
+namespace Boggle_CSCE_361.Models.DatabaseInfo
 {
-    public class DatabaseUtils
+    public class DatabaseUtilsModel
     {
-        public static Boolean CheckIfInDatabase(string word)
+        public static bool CheckIfInDatabase(string word)
         {
             string connString = DatabaseConnectionInfoModel.ConnectionString();
             string query = "SELECT COUNT(*) FROM words WHERE word = @InputString";

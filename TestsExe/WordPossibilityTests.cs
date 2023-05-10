@@ -1,4 +1,6 @@
 ﻿using Boggle_CSCE_361.Controllers;
+using Boggle_CSCE_361.Controllers.Controllers;
+using Boggle_CSCE_361.Controllers.Interfaces;
 
 namespace Tests
 {
